@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import TodoItems from "../TodoItems";
+import "./style.css";
 
 class TodoList extends Component {
   constructor(props) {
@@ -8,6 +10,8 @@ class TodoList extends Component {
       items: [],
     };
     this.addItem = this.addItem.bind(this);
+    this.log = this.log.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
   }
   addItem(e) {
     let state = this.state;
@@ -16,13 +20,26 @@ class TodoList extends Component {
         text: this._tarefaInput.value,
         key: Date.now(),
       };
+      this.setState({ items: [...state.items, newItem] });
     }
-    e.preventDfault();
+    e.preventDefault();
+    this.setState({ tarefa: "" });
+  }
+  log() {
+    console.log(this.state.items);
+  }
+  deleteItem(key) {
+    console.log("Item a ser deletado:" + key);
+    let filtro = this.state.items.filter((item) => {
+      return item.key !== key;
+    });
+
+    this.setState({ items: filtro });
   }
 
   render() {
     return (
-      <div>
+      <div className="container">
         <form onSubmit={this.addItem}>
           <input
             type="text"
@@ -32,8 +49,13 @@ class TodoList extends Component {
             onChange={(ev) => this.setState({ tarefa: ev.target.value })}
             ref={(event) => (this._tarefaInput = event)}
           />
-          <button type="submit">Adicionar</button>
+          <button type="submit" className="botao">
+            Adicionar
+          </button>
         </form>
+        <button onClick={this.log}>LOG</button>
+
+        <TodoItems lista={this.state.items} delete={this.deleteItem} />
       </div>
     );
   }
